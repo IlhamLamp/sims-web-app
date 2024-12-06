@@ -21,3 +21,8 @@ Route::get('/dashboard/product', function () {
 Route::get('/dashboard/product/create', function () {
     return view('dashboard.products.create');
 })->name('create');
+
+Route::get('/dashboard/profile', function () {
+    return view('dashboard.profile.index');
+})->name('profile');
+

@@ -4,7 +4,7 @@
 
 @section('core')
 
-<div class="bg-white rounded-lg w-full">
+<div class="bg-white w-full">
     <h1 class="text-xl font-bold text-gray-700 mt-2 mb-4">Tambah Produk</h1>
     
     <!-- Form -->

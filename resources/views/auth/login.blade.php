@@ -7,9 +7,9 @@
     {{-- LEFT --}}
     <div class="w-1/2 flex flex-col justify-center items-center bg-white">
         <div class="max-w-md w-full px-6">
-            <div class="flex flex-row justify-center items-center gap-2">
-                <img src="{{ asset('/assets/Handbag.png') }}" alt="handbag-icon" class="" width="10px" height="10px">
-                <h1 class="text-xl text-gray-600 font-semibold text-center mb-6">SIMS Web App</h1>
+            <div class="flex flex-row justify-center items-center gap-2 mb-6">
+                <img src="{{ asset('/assets/Handbag.png') }}" alt="handbag-icon" class="w-5 h-5 filter redHandbag" width="20px" height="20px">
+                <h1 class="text-xl text-gray-600 font-semibold text-center">SIMS Web App</h1>
             </div>
             <span class="flex mx-auto items-center text-center justify-center w-[250px]">
                 <p class="text-2xl font-semibold text-gray-700 mb-8">Masuk atau buat akun untuk memulai</p>
