@@ -11,5 +11,13 @@ Route::get('/login', function () {
 })->name('login');
 
 Route::get('/dashboard', function () {
-    return view('layouts.dashboard');
+    return view('dashboard.index');
 })->name('dashboard');
+
+Route::get('/dashboard/product', function () {
+    return view('dashboard.products.index');
+})->name('products');
+
+Route::get('/dashboard/product/create', function () {
+    return view('dashboard.products.create');
+})->name('create');
