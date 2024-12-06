@@ -7,5 +7,9 @@ Route::get('/', function () {
 });
 
 Route::get('/login', function () {
-    return view('auth.login'); // Menampilkan file resources/views/auth/login.blade.php
+    return view('auth.login');
 })->name('login');
+
+Route::get('/dashboard', function () {
+    return view('layouts.dashboard');
+})->name('dashboard');
