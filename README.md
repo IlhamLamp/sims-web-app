@@ -64,3 +64,96 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+```
+sims-web-app
+├─ .gitignore
+├─ app
+│  ├─ Http
+│  │  ├─ Controllers
+│  │  │  ├─ Controller.php
+│  │  │  └─ ProductController.php
+│  │  ├─ Middleware
+│  │  └─ Request
+│  ├─ Models
+│  │  ├─ Category.php
+│  │  ├─ Product.php
+│  │  └─ User.php
+│  ├─ Providers
+│  │  └─ AppServiceProvider.php
+│  ├─ Services
+│  │  ├─ ExportService.php
+│  │  └─ ImageService.php
+│  └─ View
+│     └─ Components
+│        ├─ Alert.php
+│        └─ Breadcrumb.php
+├─ artisan
+├─ bootstrap
+│  ├─ app.php
+│  ├─ cache
+│  │  ├─ .gitignore
+│  │  ├─ packages.php
+│  │  └─ services.php
+│  └─ providers.php
+├─ composer.json
+├─ composer.lock
+├─ config
+│  ├─ app.php
+│  ├─ auth.php
+│  ├─ database.php
+│  ├─ services.php
+│  └─ session.php
+├─ database
+│  ├─ .gitignore
+│  ├─ database.sqlite
+│  ├─ factories
+│  │  └─ UserFactory.php
+│  ├─ migrations
+│  │  ├─ 0001_01_01_000000_create_users_table.php
+│  │  ├─ create_categories_table.php
+│  │  └─ create_products_table.php
+│  └─ seeders
+│     └─ DatabaseSeeder.php
+├─ package-lock.json
+├─ package.json
+├─ phpunit.xml
+├─ postcss.config.js
+├─ public
+│  ├─ .htaccess
+│  ├─ assets
+│  ├─ favicon.ico
+│  ├─ index.php
+│  ├─ robots.txt
+│  └─ uploads
+├─ README.md
+├─ resources
+│  ├─ css
+│  │  └─ app.css
+│  ├─ js
+│  │  ├─ app.js
+│  │  └─ bootstrap.js
+│  └─ views
+│     ├─ auth
+│     │  └─ login.blade.php
+│     ├─ components
+│     │  └─ breadcrumb.blade.php
+│     ├─ dashboard
+│     │  ├─ index.blade.php
+│     │  ├─ products
+│     │  │  ├─ create.blade.php
+│     │  │  ├─ edit.blade.php
+│     │  │  └─ index.blade.php
+│     │  └─ profile
+│     │     └─ index.blade.php
+│     ├─ layouts
+│     │  ├─ dashboard.blade.php
+│     │  └─ master.blade.php
+│     └─ welcome.blade.php
+├─ routes
+│  ├─ console.php
+│  └─ web.php
+├─ tailwind.config.js
+└─ vite.config.js
+
+```

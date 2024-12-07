@@ -14,7 +14,7 @@
             <span class="flex mx-auto items-center text-center justify-center w-[250px]">
                 <p class="text-2xl font-semibold text-gray-700 mb-8">Masuk atau buat akun untuk memulai</p>
             </span>
-            <form action="/login" method="POST">
+            <form action="/api/login" method="POST">
                 @csrf
                 <div class="flex items-center border-2 py-2.5 px-3 rounded-md mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -40,4 +40,38 @@
         <img src="/assets/Frame 98699.png" alt="Illustration" class="w-3/4">
     </div>
 </div>
+
+<script>
+    document.getElementById("login-form").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        fetch('/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                localStorage.setItem('jwt', data.token);
+                window.location.href = '/dashboard';
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan, coba lagi nanti.');
+        });
+    });
+</script>
 @endsection
