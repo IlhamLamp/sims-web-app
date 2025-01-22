@@ -22,34 +22,30 @@ class AuthService
         Log::info('Attempting to login with email: ' . $credentials['email']);
         
         $user = User::where('email', $credentials['email'])->first();
-        if (!$user) {
-            return ['success' => false, 'message' => 'User not found'];
-        }
-        
-        $comparePassword = password_verify($credentials['password'], $user->password);
-        if (!$comparePassword) {
-            return ['success' => false, 'message' => 'Invalid credentials'];
+        $response = ['success' => false, 'message' => 'User not found'];
+
+        if ($user) {
+            $comparePassword = password_verify($credentials['password'], $user->password);
+            if ($comparePassword) {
+                $token = JWTAuth::fromUser($user);
+                if ($token) {
+                    Session::put('jwt', $token);
+                    Log::info('Successfully login with email: ' . $credentials['email']);
+                    $response = [
+                        'success' => true,
+                        'message' => 'Login successful',
+                        'token' => $token,
+                        'user' => $user,
+                    ];
+                } else {
+                    $response['message'] = 'Invalid credentials';
+                }
+            } else {
+                $response['message'] = 'Invalid credentials';
+            }
         }
 
-        $token = JWTAuth::fromUser($user);
-        if (!$token) {
-            return [
-                'success' => false,
-                'message' => 'Invalid credentials',
-                'token' => null,
-                'user' => null,
-            ];
-        }
-        
-        Session::put('jwt', $token);
-
-        Log::info('Succesfully lohin with email: ' . $credentials['email']);
-        return [
-            'success' => true,
-            'message' => 'Login successful',
-            'token' => $token,
-            'user' => $user,
-        ];
+        return $response;
     }
 
     public function logout()

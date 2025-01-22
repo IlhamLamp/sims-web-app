@@ -11,7 +11,7 @@ class User extends Authenticatable implements JWTSubject
     use HasFactory;
 
     protected $fillable = [
-        'nama',
+        'name',
         'email',
         'password',
         'position',
@@ -20,13 +20,11 @@ class User extends Authenticatable implements JWTSubject
 
     public function getJWTIdentifier()
     {
-        // Ini adalah metode yang diperlukan oleh JWTSubject untuk mendapatkan ID pengguna
         return $this->getKey();
     }
 
     public function getJWTCustomClaims()
     {
-        // Kembalikan klaim kustom jika diperlukan (misalnya peran pengguna)
         return [];
     }
 }

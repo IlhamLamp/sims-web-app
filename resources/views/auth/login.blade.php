@@ -41,7 +41,7 @@
     </div>
 </div>
 
-<script>
+{{-- <script>
     document.getElementById("login-form").addEventListener("submit", function(event) {
         event.preventDefault();
 
@@ -73,5 +73,5 @@
             alert('Terjadi kesalahan, coba lagi nanti.');
         });
     });
-</script>
+</script> --}}
 @endsection

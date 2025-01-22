@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use App\Services\AuthService;
 use Illuminate\Http\Request;
 
@@ -12,11 +13,6 @@ class AuthController extends Controller
     public function __construct(AuthService $authService)
     {
         $this->authService = $authService;
-    }
-
-    public function showLoginForm()
-    {
-        return view('auth.login');
     }
 
     public function login(Request $request)
@@ -35,7 +31,11 @@ class AuthController extends Controller
 
         session(['jwt' => $response['token']]);
 
-        return redirect()->intended('/dashboard')->with('message', 'Login successful!');
+        return response()->json([
+            'message' => 'Login successfully',
+            'token' => $response['token'],
+            'user' => $response['user'],
+        ], 201);
     }
 
     public function logout()
@@ -47,7 +47,7 @@ class AuthController extends Controller
     public function register (Request $request)
     {
         $request->validate([
-            'nama' => 'nullable|string',
+            'name' => 'nullable|string',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string',
             'position' => 'nullable|string',
@@ -67,5 +67,22 @@ class AuthController extends Controller
             'token' => $response['token'],
             'user' => $response['user'],
         ], 201);
+    }
+
+    public function me()
+    {
+        return response()->json(Auth::user());
+    }
+
+    public function refresh()
+    {
+        return response()->json([
+            'status' => 'success',
+            'user' => Auth::user(),
+            'authorisation' => [
+                'token' => Auth::refresh(),
+                'type' => 'bearer',
+            ]
+        ]);
     }
 }
