@@ -42,29 +42,28 @@
     </div>
 </div>
 
-<script type="text/javascript">
-$('#loginForm').on('submit', function(e) {
-    e.preventDefault();
-    
-    $.ajax({
-        url: '/api/auth/login',
-        type: 'POST',
-        data: {
+@vite(['resources/js/api/auth.js'])
+<script>
+    $('#loginForm').on('submit', function (e) {
+        e.preventDefault();
+
+        const credentials = {
             email: $('#email').val(),
             password: $('#password').val(),
-            _token: $('meta[name="csrf-token"]').attr('content')
-        },
-        success: function(response) {
-            if (response.token) {
-                localStorage.setItem('token', response.token);
-                window.location.href = '/dashboard';
-            }
-        },
-        error: function(xhr) {
-            $('#errorMessage').text(xhr.responseJSON.message).show();
-        }
+        };
+
+        authApi
+            .login(credentials)
+            .then((response) => {
+                if (response.token) {
+                    localStorage.setItem('token', response.token);
+                    window.location.href = '/dashboard';
+                }
+            })
+            .catch((error) => {
+                $('#errorMessage').text(error.responseJSON.message).show();
+            });
     });
-});
 </script>
 
 @endsection

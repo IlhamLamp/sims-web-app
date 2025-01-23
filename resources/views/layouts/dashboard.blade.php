@@ -48,7 +48,25 @@
     </div>
 </div>
 
+@vite(['resources/js/api/user.js'])
 <script>
+    $(document).ready(function() {
+        userApi.getProfile().then((response) => {
+            if (response.token) {
+                localStorage.setItem('token', response.token);
+                window.location.href = '/dashboard';
+            } else {
+                window.location.href = '/login';
+            }
+        }).catch((error) => {
+            if (error.status === 401) {
+                window.location.href = '/login';
+            } else {
+                console.error('Terjadi kesalahan: ', error);
+            }
+        });
+    });
+
     const sidebar = document.getElementById('sidebar');
     const hamburgerBtn = document.getElementById('hamburger-btn');
     const spans = sidebar.querySelectorAll('span');

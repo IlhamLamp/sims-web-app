@@ -1,26 +1,28 @@
 import { BASE_URL } from "../constant";
 
 export const userApi = {
-    async getProfile() {
-        const response = await fetch(`${BASE_URL}/profile`, {
+    getProfile: async () => {
+        return $.ajax({
+            url: `${BASE_URL}/auth/profile`,
+            method: "GET",
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
                 Accept: "application/json",
             },
         });
-        return response.json();
     },
 
-    async updateProfile(userData) {
-        const response = await fetch(`${BASE_URL}/profile`, {
+    updateProfile: async (userData) => {
+        return $.ajax({
+            url: `${BASE_URL}/auth/profile`,
             method: "PUT",
+            contentType: "application/json",
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-                Accept: "application/json",
             },
-            body: JSON.stringify(userData),
+            data: JSON.stringify(userData),
         });
-        return response.json();
     },
 };
+
+window.userApi = userApi;

@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Services\Contracts\UserServiceInterface;
-use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserService implements UserServiceInterface
 {
@@ -14,7 +14,7 @@ class UserService implements UserServiceInterface
 
     public function getCurrentUserProfile(): array
 {
-    $user = Auth::user();
+    $user = JWTAuth::user();
 
     if (!$user) {
         return [
@@ -22,12 +22,18 @@ class UserService implements UserServiceInterface
             'message' => 'User not authenticated'
         ];
     }
-    return (array) $user;
+    return [
+        'id' => $user->id,
+        'name' => $user->name,
+        'email' => $user->email,
+        'position' => $user->position,
+        'image_url' => $user->image_url
+    ];
 }
 
     public function updateUser(array $userData): array
     {
-        $user = $this->userRepository->update(Auth::id(), $userData);
+        $user = $this->userRepository->update(JWTAuth::id(), $userData);
 
         return [
             'success' => true,

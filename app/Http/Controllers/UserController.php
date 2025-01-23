@@ -1,5 +1,8 @@
 <?php
 
+namespace App\Http\Controllers;
+
+use App\Http\Requests\User\UserRequest;
 use App\Services\Contracts\UserServiceInterface;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
