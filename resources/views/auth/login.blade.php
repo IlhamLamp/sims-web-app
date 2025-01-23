@@ -42,50 +42,29 @@
     </div>
 </div>
 
-@push('scripts')
 <script type="text/javascript">
-import { authApi } from '/resources/js/api.js';
-
-const loginForm = document.getElementById('loginForm');
-const errorMessage = document.getElementById('errorMessage');
-const loginText = document.getElementById('loginText');
-const loadingText = document.getElementById('loadingText');
-
-async function handleLogin(e) {
+$('#loginForm').on('submit', function(e) {
     e.preventDefault();
     
-    loginText.classList.add('hidden');
-    loadingText.classList.remove('hidden');
-    errorMessage.classList.add('hidden');
-
-    try {
-        const formData = {
-            email: document.getElementById('email').value,
-            password: document.getElementById('password').value
+    $.ajax({
+        url: '/api/auth/login',
+        type: 'POST',
+        data: {
+            email: $('#email').val(),
+            password: $('#password').val(),
+            _token: $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            if (response.token) {
+                localStorage.setItem('token', response.token);
+                window.location.href = '/dashboard';
+            }
+        },
+        error: function(xhr) {
+            $('#errorMessage').text(xhr.responseJSON.message).show();
         }
-
-        const response = await authApi.login(formData);
-        const data = await response.json();
-
-        if (response.ok && data.token) {
-            localStorage.setItem('token', data.token);
-            window.location.href = "/dashboard";
-        } else {
-            errorMessage.textContent = data.message || 'Login failed';
-            errorMessage.classList.remove('hidden');
-        }
-    } catch (error) {
-        console.error('Login failed:', error);
-        errorMessage.textContent = 'An error occurred. Please try again.';
-        errorMessage.classList.remove('hidden');
-    } finally {
-        loginText.classList.remove('hidden');
-        loadingText.classList.add('hidden');
-    }
-}
-
-loginForm.addEventListener('submit', handleLogin);
+    });
+});
 </script>
-@endpush
 
 @endsection
