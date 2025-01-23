@@ -6,8 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <script src="js/app.js"></script>
     @vite('resources/css/app.css')
-    @vite(['resources/js/script.js'])
+    @vite('resources/js/app.js')
     <title>@yield('title')</title>
 </head>
 <body class="m-0">

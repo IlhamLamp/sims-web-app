@@ -14,23 +14,24 @@
             <span class="flex mx-auto items-center text-center justify-center w-[250px]">
                 <p class="text-2xl font-semibold text-gray-700 mb-8">Masuk atau buat akun untuk memulai</p>
             </span>
-            <form action="/api/login" method="POST">
+            <form id="loginForm">
                 @csrf
                 <div class="flex items-center border-2 py-2.5 px-3 rounded-md mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
                     </svg>
-                    <input class="pl-2 outline-none border-none w-full text-sm text-gray-700" type="email" name="email" value="" placeholder="masukan email anda" required/>
+                    <input class="pl-2 outline-none border-none w-full text-sm text-gray-700" type="email" name="email" id="email" placeholder="masukan email anda" required/>
                 </div>
                 <div class="flex items-center border-2 py-2.5 px-3 rounded-md mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
                     </svg>
-                    <input class="pl-2 outline-none border-none w-full text-sm text-gray-700" type="password" name="password" id="" placeholder="masukan password anda" required/>
+                    <input class="pl-2 outline-none border-none w-full text-sm text-gray-700" type="password" name="password" id="password" placeholder="masukan password anda" required/>
                 </div>
-                <button type="submit"
-                        class="w-full px-2 py-3 bg-Primary text-white text-sm font-medium rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500">
-                    Masuk
+                <div id="errorMessage" class="text-red-500 mb-4 hidden"></div>
+                <button type="submit" class="w-full px-2 py-3 bg-Primary text-white text-sm font-medium rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500">
+                    <span id="loginText">Masuk</span>
+                    <span id="loadingText" class="hidden">Loading...</span>
                 </button>
             </form>
         </div>
@@ -41,37 +42,50 @@
     </div>
 </div>
 
-{{-- <script>
-    document.getElementById("login-form").addEventListener("submit", function(event) {
-        event.preventDefault();
+@push('scripts')
+<script type="text/javascript">
+import { authApi } from '/resources/js/api.js';
 
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
+const loginForm = document.getElementById('loginForm');
+const errorMessage = document.getElementById('errorMessage');
+const loginText = document.getElementById('loginText');
+const loadingText = document.getElementById('loadingText');
 
-        fetch('/api/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({
-                email: email,
-                password: password
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                localStorage.setItem('jwt', data.token);
-                window.location.href = '/dashboard';
-            } else {
-                alert(data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Terjadi kesalahan, coba lagi nanti.');
-        });
-    });
-</script> --}}
+async function handleLogin(e) {
+    e.preventDefault();
+    
+    loginText.classList.add('hidden');
+    loadingText.classList.remove('hidden');
+    errorMessage.classList.add('hidden');
+
+    try {
+        const formData = {
+            email: document.getElementById('email').value,
+            password: document.getElementById('password').value
+        }
+
+        const response = await authApi.login(formData);
+        const data = await response.json();
+
+        if (response.ok && data.token) {
+            localStorage.setItem('token', data.token);
+            window.location.href = "/dashboard";
+        } else {
+            errorMessage.textContent = data.message || 'Login failed';
+            errorMessage.classList.remove('hidden');
+        }
+    } catch (error) {
+        console.error('Login failed:', error);
+        errorMessage.textContent = 'An error occurred. Please try again.';
+        errorMessage.classList.remove('hidden');
+    } finally {
+        loginText.classList.remove('hidden');
+        loadingText.classList.add('hidden');
+    }
+}
+
+loginForm.addEventListener('submit', handleLogin);
+</script>
+@endpush
+
 @endsection

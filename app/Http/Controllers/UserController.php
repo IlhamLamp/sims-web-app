@@ -1,19 +1,28 @@
 <?php
 
-use App\Services\UserService;
+use App\Services\Contracts\UserServiceInterface;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 
 class UserController extends Controller
 {
-    protected $userService;
+    public function __construct(
+        private readonly UserServiceInterface $userService
+    ) {}
 
-    public function __construct(UserService $userService)
+
+    public function profile(): JsonResponse
     {
-        $this->userService = $userService;
+        return response()->json(
+            $this->userService->getCurrentUserProfile()
+        );
     }
 
-    public function getUser()
+    public function update(UserRequest $request): JsonResponse
     {
-        return $this->userService->getUserFromToken();
+        return response()->json(
+            $this->userService->updateUser($request->validated())
+        );
     }
+
 }

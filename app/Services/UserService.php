@@ -2,26 +2,37 @@
 
 namespace App\Services;
 
-use Tymon\JWTAuth\Facades\JWTAuth;
-use \Tymon\JWTAuth\Exceptions\JWTException;
+use App\Repositories\Contracts\UserRepositoryInterface;
+use App\Services\Contracts\UserServiceInterface;
+use Illuminate\Support\Facades\Auth;
 
-class UserService
+class UserService implements UserServiceInterface
 {
-    public function getUserFromToken()
-    {
-        $token = session('jwt');
-        if (!$token) {
-            return response()->json(['success' => false, 'message' => 'Token not found'], 401);
-        }
+    public function __construct(
+        private readonly UserRepositoryInterface $userRepository
+    ) {}
 
-        try {
-            $user = JWTAuth::setToken($token)->authenticate();
-            if (!$user) {
-                return response()->json(['success' => false, 'message' => 'User not found'], 404);
-            }
-            return response()->json(['success' => true, 'user' => $user]);
-        } catch (JWTException $exception) {
-            return response()->json(['success' => false, 'message' => 'Invalid token'], 401);
-        }
+    public function getCurrentUserProfile(): array
+{
+    $user = Auth::user();
+
+    if (!$user) {
+        return [
+            'success' => false,
+            'message' => 'User not authenticated'
+        ];
+    }
+    return (array) $user;
+}
+
+    public function updateUser(array $userData): array
+    {
+        $user = $this->userRepository->update(Auth::id(), $userData);
+
+        return [
+            'success' => true,
+            'message' => 'Profile updated successfully',
+            'user' => (array) $user
+        ];
     }
 }

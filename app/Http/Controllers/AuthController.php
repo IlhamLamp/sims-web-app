@@ -2,87 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
-use App\Services\AuthService;
-use Illuminate\Http\Request;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
+use App\Services\Contracts\AuthServiceInterface;
+use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
-    protected $authService;
 
-    public function __construct(AuthService $authService)
+    public function __construct(private readonly AuthServiceInterface $authService) {}
+
+    public function register(RegisterRequest $request): JsonResponse
     {
-        $this->authService = $authService;
+        return response()->json(
+            $this->authService->register($request->validated())
+        );
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request): JsonResponse
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-
-        $credentials = $request->only(['email', 'password']);
-        $response = $this->authService->login($credentials);
-
+        $response = $this->authService->login($request->validated());
         if (!$response['success']) {
-            return back()->withErrors(['error' => $response['message']]);
+            return response()->json($response, 401);
         }
-
-        session(['jwt' => $response['token']]);
-
-        return response()->json([
-            'message' => 'Login successfully',
-            'token' => $response['token'],
-            'user' => $response['user'],
-        ], 201);
+        return response()->json($response, 200);
     }
 
-    public function logout()
+    public function logout(): JsonResponse
     {
-        $this->authService->logout();
-        return response()->json(['message' => 'Logged out successfully'], 200);
-    }
-
-    public function register (Request $request)
-    {
-        $request->validate([
-            'name' => 'nullable|string',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string',
-            'position' => 'nullable|string',
-            'image_url' => 'nullable|string',
-        ]);
-
-        $data = $request->only(['nama', 'email', 'password', 'position', 'image_url']);
-
-        $response = $this->authService->register($data);
-
-        if (!$response['success']) {
-            return response()->json(['error' => $response['message']], 400);
-        }
-
-        return response()->json([
-            'message' => 'User registered successfully',
-            'token' => $response['token'],
-            'user' => $response['user'],
-        ], 201);
-    }
-
-    public function me()
-    {
-        return response()->json(Auth::user());
-    }
-
-    public function refresh()
-    {
-        return response()->json([
-            'status' => 'success',
-            'user' => Auth::user(),
-            'authorisation' => [
-                'token' => Auth::refresh(),
-                'type' => 'bearer',
-            ]
-        ]);
+        return response()->json(
+            $this->authService->logout()
+        );
     }
 }
